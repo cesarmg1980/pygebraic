@@ -1,0 +1,2 @@
+regex for coeficient:^\d+(?=[a-zA-Z])
+regex for literals:([a-zA-Z]\^\d+)|([a-zA-Z])
