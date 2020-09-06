@@ -1,1 +1,10 @@
 /venv-algebra
+/__pycache__
+/code/__pycache__
+/code/basic_algebraic_elements/__pycache__
+/code/basic_operations/__pycache__
+/test/__pycache__
+/test/basic_algebraic_elements/__pycache__
+/test/basic_operations/__pycache__
+*.pyc
+*.swp

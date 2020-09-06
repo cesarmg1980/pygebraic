@@ -1,5 +1,5 @@
 import unittest
-from basic_operations.sum import AlgebraicSum
+from code.basic_operations.sum import AlgebraicSum
 
 
 class TestAlgebraicSum(unittest.TestCase):
