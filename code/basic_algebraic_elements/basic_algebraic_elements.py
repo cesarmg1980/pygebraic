@@ -21,7 +21,7 @@ class Monomy:
             COEFFICIENT_PATTERN, expression
         )
         if coefficient is not None:
-            self.monomy_coeficient = coefficient
+            self.monomy_coeficient = int(coefficient.group())
 
         literals = re.findall(
             LITERALS_PATTERN, expression
@@ -59,6 +59,6 @@ class Monomy:
 
         for element in exponents_list:
             literal_exponent_pair = element.split('^')
-            literal_exponent_dict[literal_exponent_pair[0]] = literal_exponent_pair[1]
+            literal_exponent_dict[literal_exponent_pair[0]] = int(literal_exponent_pair[1])
 
         return literal_exponent_dict
