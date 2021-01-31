@@ -1,6 +1,6 @@
 import re
 
-COEFFICIENT_PATTERN = r"^[0-9]"
+COEFFICIENT_PATTERN = r"^-?[0-9]"
 LITERALS_PATTERN = r"[a-z]"
 EXPONENT_PATTERN = r"[a-z]\^[1-9]+"
 
