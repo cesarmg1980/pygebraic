@@ -1,12 +1,13 @@
 #!/bin/bash
 
 tests(){
-    docker run --rm -it py3.9-poetry poetry run python -m pytest
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run python -m pytest "$@"
 }
 
 ipython(){
     docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run ipython
 }
 
-ARGS=$1
-$1
+
+ARGS="$@"
+"$@"

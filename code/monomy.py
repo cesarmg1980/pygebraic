@@ -1,8 +1,10 @@
 import re
 
-COEFFICIENT_PATTERN = r"^-?[0-9]"
+COEFFICIENT_PATTERN = r"-?[0-9]?"
 LITERALS_PATTERN = r"[a-z]"
-EXPONENT_PATTERN = r"[a-z]\^[1-9]+"
+EXPONENT_PATTERN = r"[a-z]\^[1-9]*"
+ONE = ""
+MINUS_ONE = "-"
 
 
 class MonomicExpressionWithoutLiteralsError(Exception):
@@ -11,7 +13,7 @@ class MonomicExpressionWithoutLiteralsError(Exception):
 
 class Monomy:
     def __init__(self, expression):
-        self.monomy_coeficient = 1
+        self.coefficient = 0
         self.literals_list = []
         self.literal_to_exponent_mapping = {}
         self._build_monomy(expression)
@@ -20,8 +22,12 @@ class Monomy:
         coefficient = re.search(
             COEFFICIENT_PATTERN, expression
         )
-        if coefficient is not None:
-            self.monomy_coeficient = int(coefficient.group())
+        if coefficient.group() is ONE:
+            self.coefficient = 1
+        elif coefficient.group() is MINUS_ONE:
+            self.coefficient = -1
+        else:
+            self.coefficient = int(coefficient.group())
 
         literals = re.findall(
             LITERALS_PATTERN, expression
@@ -62,3 +68,21 @@ class Monomy:
             literal_exponent_dict[literal_exponent_pair[0]] = int(literal_exponent_pair[1])
 
         return literal_exponent_dict
+
+    def _literal_to_exponent_mapping_to_string(self) -> str:
+        """Converts the 'literal_to_exponent_mapping' into a readable string"""
+        return "".join([f"{k}^{v}" for k, v in self.literal_to_exponent_mapping])
+
+    def __add__(self, other: 'Monomy') -> 'Monomy':
+        """Adds 2 Monomies using the '+' operator"""
+        pass
+
+    def __eq__(self, other: 'Monomy') -> bool:
+        """Compares 2 Monomies"""
+        pass
+
+
+    def __repr__(self) -> str:
+        """Returns the textual representation of a Monomy"""
+        literals_str = "".join([f"{k}^{v}" if v > 1 else f"{k}" for k, v in self.literal_to_exponent_mapping.items()])
+        return "".join([str(self.coefficient), literals_str])
