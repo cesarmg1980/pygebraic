@@ -8,3 +8,4 @@
 /test/basic_operations/__pycache__
 *.pyc
 *.swp
+.python-version
