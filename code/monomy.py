@@ -71,7 +71,7 @@ class Monomy:
 
     def _literal_to_exponent_mapping_to_string(self) -> str:
         """Converts the 'literal_to_exponent_mapping' into a readable string"""
-        return "".join([f"{k}^{v}" for k, v in self.literal_to_exponent_mapping])
+        return "".join([f"{k}^{v}" if v > 1 else f"{k}" for k, v in self.literal_to_exponent_mapping.items()])
 
     def __add__(self, other: 'Monomy') -> 'Monomy':
         """Adds 2 Monomies using the '+' operator"""
@@ -84,5 +84,5 @@ class Monomy:
 
     def __repr__(self) -> str:
         """Returns the textual representation of a Monomy"""
-        literals_str = "".join([f"{k}^{v}" if v > 1 else f"{k}" for k, v in self.literal_to_exponent_mapping.items()])
+        literals_str = self._literal_to_exponent_mapping_to_string()
         return "".join([str(self.coefficient), literals_str])
