@@ -8,6 +8,18 @@ ipython(){
     docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run ipython
 }
 
+isort() {
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run isort .
+}
+
+black() {
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run black .
+}
+
+mypy() {
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run mypy .
+}
+
 
 ARGS="$@"
 "$@"
