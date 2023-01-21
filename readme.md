@@ -1,15 +1,27 @@
 ## Algebra with Python
 
-Algebra with python is a series of programs that compute algebraic expressions
+Algebra with python it's meant to be a tool to compute algebraic expressions
 
-## Requirements
+## How to Use it:
 
-### 1) Create a Virtual Environment
+- Clone this repo
+- cd into the repo's folder
+- run `docker build -t <whatever_tag_you_like_> .`
+- run `./run tests` (this will create a container, run the unit tests and exit
+- Alternatively you could spawn an `ipython` shell typing `./run ipython`
+- You can see the list of commands that you can run is you inspect `run` script.
 
-- run python3 -m venv <name-of-your-new-environment>
+That's it for now, as time allows me i'll keep enhancing the tool for now the major goal is to:
 
-### 2) How to run the venv.
+- Compute Sum, Substraction, Multiplication and Division of Monomies and Polinomies.
 
-#### Linux
+The end goal is to have a tool that can:
 
-- source /path_to_venv/bin/activate.
+- Perform all the operations on an Algebraic expression like:
+  - Factorization.
+  - MCD
+  - MCM
+  - Fraction Operation & simplification
+  - Equations
+  - System of Equations
+  - and more...
