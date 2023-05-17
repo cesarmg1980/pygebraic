@@ -1,6 +1,6 @@
-## Algebra with Python
+## Pygebraic -Still a WIP-
 
-Algebra with python it's meant to be a tool to compute algebraic expressions
+Pygebraic is supposed to be a nice tool to solve algebraic expressions: You provide a string representing of an algebraic expresion and possibly an operation to be performed on it and `pygebraic` will solve it for you along with the steps towards the solution and (why not) also possibly a file that you can print (pdf or some other human-friendly format) where you can see the input, the solution and the steps that led to that solution.
 
 ## How to Use it:
 
@@ -11,7 +11,7 @@ Algebra with python it's meant to be a tool to compute algebraic expressions
 - Alternatively you could spawn an `ipython` shell typing `./run ipython`
 - You can see the list of commands that you can run is you inspect `run` script.
 
-That's it for now, as time allows me i'll keep enhancing the tool for now the major goal is to:
+That's it for now, as time allows me i'll keep enhancing the tool, for now the major goal is to:
 
 - Compute Sum, Substraction, Multiplication and Division of Monomies and Polinomies.
 
