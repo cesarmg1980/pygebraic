@@ -1,6 +1,7 @@
 import re
+from collections import Counter
 
-COEFFICIENT_PATTERN = r"-?[0-9]?"
+COEFFICIENT_PATTERN = r"-?[0-9]*"
 LITERALS_PATTERN = r"[a-z]"
 EXPONENT_PATTERN = r"[a-z]\^[1-9]*"
 ONE = ""
@@ -19,7 +20,7 @@ class Monomial:
         self.variables = variables
 
     @classmethod
-    def from_expression(cls, expression: str):
+    def from_string_expression(cls, expression: str):
         coefficient: int = 0
         variables: dict = {}
 
@@ -35,7 +36,9 @@ class Monomial:
         if variables_list is None:
             raise MonomicExpressionWithoutLiteralsError
 
-        variable_to_exponent_mapping = Monomial.map_exponents_to_variables(re.findall(EXPONENT_PATTERN, expression))
+        variable_to_exponent_mapping = Monomial.map_exponents_to_variables(
+            re.findall(EXPONENT_PATTERN, expression)
+        )
         for variable in [variable for variable in variables_list]:
             variables[variable] = variable_to_exponent_mapping.get(variable, 1)
 
@@ -58,42 +61,39 @@ class Monomial:
 
         return variable_exponent_dict
 
-    def _variables_to_string(self) -> str:
-        """Converts the 'literal_to_exponent_mapping' into a readable string"""
-        return "".join(
-            [
-                f"{k}^{v}" if v > 1 else f"{k}"
-                for k, v in self.variables.items()
-            ]
-        )
-
-    def _coefficient_to_string(self) -> str:
-        """Converts the Monomial Coefficient to readable string"""
-        if self.coefficient == 1:
-            return ONE
-        elif self.coefficient == -1:
-            return MINUS_ONE
-        else:
-            return str(self.coefficient)
-
     def __add__(self, other: "Monomial") -> "Monomial":
         """Adds 2 Monomies using the '+' operator"""
         if not self._alike_monomies(other):
-            raise NotImplementedError("Sum of Non-Alike Monomies is not Implemented Yet")
+            # Here we need to create a Polynomial
+            raise NotImplementedError(
+                "Sum of Non-Alike Monomies is not Implemented Yet"
+            )
         return Monomial(self.coefficient + other.coefficient, self.variables)
 
-    def _alike_monomies(self, other: "Monomial") -> bool:
-        """Returns True whether the 2 Monomials are alike (have same literal
-        parts)"""
-        return self.variables == other.variables
+    def __sub__(self, other: "Monomial") -> "Monomial":
+        """Adds 2 Monomies using the '+' operator"""
+        if not self._alike_monomies(other):
+            # Here we need to create a Polynomial
+            raise NotImplementedError(
+                "Sum of Non-Alike Monomies is not Implemented Yet"
+            )
+        return Monomial(self.coefficient - other.coefficient, self.variables)
+
+    def __mul__(self, other: "Monomial") -> "Monomial":
+        """
+        Multiplies 2 Monomials
+        """
+        return Monomial(
+            self.coefficient * other.coefficient,
+            dict(Counter(self.variables) + Counter(other.variables)),
+        )
 
     def __eq__(self, other: object) -> bool:
         """Compares 2 Monomies"""
         if not isinstance(other, Monomial):
             raise Exception("Error: <other> is not of a 'Monomial' instance")
         return (
-            self.coefficient == other.coefficient
-            and self.variables == other.variables
+            self.coefficient == other.coefficient and self.variables == other.variables
         )
 
     def __repr__(self) -> str:
@@ -104,3 +104,23 @@ class Monomial:
                 self._variables_to_string(),
             ]
         )
+
+    def _alike_monomies(self, other: "Monomial") -> bool:
+        """Returns True whether the 2 Monomials are alike (have same literal
+        parts)"""
+        return self.variables == other.variables
+
+    def _variables_to_string(self) -> str:
+        """Converts the 'literal_to_exponent_mapping' into a readable string"""
+        return "".join(
+            [f"{k}^{v}" if v > 1 else f"{k}" for k, v in self.variables.items()]
+        )
+
+    def _coefficient_to_string(self) -> str:
+        """Converts the Monomial Coefficient to readable string"""
+        if self.coefficient == 1:
+            return ONE
+        elif self.coefficient == -1:
+            return MINUS_ONE
+        else:
+            return str(self.coefficient)

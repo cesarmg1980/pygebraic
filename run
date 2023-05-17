@@ -20,6 +20,10 @@ mypy() {
     docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run mypy .
 }
 
+dev() {
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run bash
+}
+
 
 ARGS="$@"
 "$@"
