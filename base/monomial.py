@@ -20,7 +20,7 @@ class Monomial:
         self.variables = variables
 
     @classmethod
-    def from_string_expression(cls, expression: str):
+    def from_string(cls, expression: str):
         coefficient: int = 0
         variables: dict = {}
 
