@@ -1,5 +1,6 @@
 import re
 from collections import Counter
+from enum import Enum
 
 COEFFICIENT_PATTERN = r"-?[0-9]*"
 LITERALS_PATTERN = r"[a-z]"
@@ -12,12 +13,20 @@ class MonomialExpressionWithoutLiteralsError(Exception):
     pass
 
 
+class MonomialSign(Enum):
+    POSITIVE = "+"
+    NEGATIVE = "-"
+
+
 class Monomial:
     def __init__(self, coefficient: int = None, variables: dict = None):
         """The 'variables' arg is a dict that will have the variables and their
         matching exponent"""
         self.coefficient = coefficient
         self.variables = variables
+        self.sign = (
+            MonomialSign.POSITIVE if self.coefficient > 0 else MonomialSign.NEGATIVE
+        )  # coefficient is either > 1 or < -1 never 0
 
     @classmethod
     def from_string(cls, expression: str):

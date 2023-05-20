@@ -1,6 +1,6 @@
 import pytest
 
-from base.monomial import Monomial
+from base.monomial import Monomial, MonomialSign
 
 
 def test_monomy_with_no_coefficient_and_no_exponents_is_correctly_build():
@@ -8,6 +8,7 @@ def test_monomy_with_no_coefficient_and_no_exponents_is_correctly_build():
 
     assert monomial.coefficient == 1
     assert monomial.variables == {"a": 1, "b": 1, "c": 1}
+    assert monomial.sign == MonomialSign.POSITIVE
     assert "abc" == f"{monomial}"
 
 
@@ -16,6 +17,7 @@ def test_monomial_with_coefficient_is_correctly_build():
 
     assert monomial.coefficient == 2
     assert monomial.variables == {"x": 1, "y": 1, "z": 1}
+    assert monomial.sign == MonomialSign.POSITIVE
     assert "2xyz" == f"{monomial}"
 
 
@@ -24,6 +26,7 @@ def test_monomial_with_coefficient_and_exponents_is_correctly_build():
 
     assert monomial.coefficient == 3
     assert monomial.variables == {"a": 2, "b": 3, "c": 1}
+    assert monomial.sign == MonomialSign.POSITIVE
     assert "3a^2b^3c" == f"{monomial}"
 
 
@@ -32,6 +35,7 @@ def test_monomial_with_negative_1_coefficient():
 
     assert monomial.coefficient == -1
     assert monomial.variables == {"a": 1, "b": 1, "c": 1}
+    assert monomial.sign == MonomialSign.NEGATIVE
     assert "-abc" == f"{monomial}"
 
 
@@ -40,6 +44,7 @@ def test_monomial_with_negative_coefficient_different_than_1():
 
     assert monomial.coefficient == -2
     assert monomial.variables == {"x": 1, "y": 1, "z": 2}
+    assert monomial.sign == MonomialSign.NEGATIVE
     assert "-2xyz^2" == f"{monomial}"
 
 
