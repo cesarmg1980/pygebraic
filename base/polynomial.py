@@ -29,4 +29,3 @@ class Polynomial:
             output = output[1:]
 
         return output
-

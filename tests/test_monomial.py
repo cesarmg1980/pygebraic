@@ -155,3 +155,42 @@ def test_alike_monomial_substraction(monomial_1, monomial_2, result):
 )
 def test_monomial_product(monomial_1, monomial_2, result):
     assert monomial_1 * monomial_2 == result
+
+
+@pytest.mark.parametrize(
+    "monomial_1,monomial_2,result",
+    [
+        (
+            Monomial.from_string("4a^2b^2"),
+            Monomial.from_string("2ab"),
+            Monomial.from_string("2ab"),
+        ),
+        (
+            Monomial.from_string("4a^2b^2"),
+            Monomial.from_string("-2ab"),
+            Monomial.from_string("-2ab"),
+        ),
+        (
+            Monomial.from_string("4ab"),
+            Monomial.from_string("2a"),
+            Monomial.from_string("2b"),
+        ),
+        (
+            Monomial.from_string("4ab"),
+            Monomial.from_string("-2ab"),
+            Monomial.from_string("-2"),
+        ),
+        (
+            Monomial.from_string("4ab"),
+            Monomial.from_string("4ab"),
+            Monomial.from_string("1"),
+        ),
+        (
+            Monomial.from_string("4ab"),
+            Monomial.from_string("-4ab"),
+            Monomial.from_string("-1"),
+        ),
+    ],
+)
+def test_monomial_division(monomial_1, monomial_2, result):
+    monomial_1 / monomial_2 == result
