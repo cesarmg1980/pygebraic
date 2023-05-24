@@ -193,7 +193,7 @@ def test_monomial_product(monomial_1, monomial_2, result):
     ],
 )
 def test_monomial_division(monomial_1, monomial_2, result):
-    monomial_1 / monomial_2 == result
+    assert monomial_1 / monomial_2 == result
 
 
 @pytest.mark.parametrize(
@@ -218,6 +218,6 @@ def test_monomial_division(monomial_1, monomial_2, result):
     ],
 )
 def test_non_alike_monomial_sum_yields_a_polinomial(monomial_1, monomial_2, result):
-    monomial_1 + monomial_2 == result
-    assert isinstance(result, Polynomial)
+    assert isinstance(monomial_1 + monomial_2, Polynomial)
+    assert monomial_1 + monomial_2 == result
 
