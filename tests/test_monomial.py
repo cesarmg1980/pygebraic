@@ -217,7 +217,7 @@ def test_monomial_division(monomial_1, monomial_2, result):
 
     ],
 )
-def test_alike_monomial_sum_yields_a_polinomial(monomial_1, monomial_2, result):
+def test_non_alike_monomial_sum_yields_a_polinomial(monomial_1, monomial_2, result):
     monomial_1 + monomial_2 == result
     assert isinstance(result, Polynomial)
 
