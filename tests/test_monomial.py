@@ -1,6 +1,6 @@
 import pytest
 
-from base.monomial import Monomial, MonomialSign
+from base.base import Monomial, MonomialSign, Polynomial
 
 
 def test_monomy_with_no_coefficient_and_no_exponents_is_correctly_build():
@@ -193,4 +193,31 @@ def test_monomial_product(monomial_1, monomial_2, result):
     ],
 )
 def test_monomial_division(monomial_1, monomial_2, result):
-    monomial_1 / monomial_2 == result
+    assert monomial_1 / monomial_2 == result
+
+
+@pytest.mark.parametrize(
+    "monomial_1,monomial_2,result",
+    [
+        (
+            Monomial.from_string("2ab"),
+            Monomial.from_string("2cd"),
+            Polynomial.from_string("2ab+2cd"),
+        ),
+        (
+            Monomial.from_string("2ab"),
+            Monomial.from_string("4a^2b"),
+            Polynomial.from_string("2ab+4a^2b"),
+        ),
+        (
+            Monomial.from_string("2a^2b^3"),
+            Monomial.from_string("2a^3b^2"),
+            Polynomial.from_string("2a^2b^3+2a^3b^2"),
+        ),
+
+    ],
+)
+def test_non_alike_monomial_sum_yields_a_polinomial(monomial_1, monomial_2, result):
+    assert isinstance(monomial_1 + monomial_2, Polynomial)
+    assert monomial_1 + monomial_2 == result
+

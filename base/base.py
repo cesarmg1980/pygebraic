@@ -1,4 +1,5 @@
 import re
+import typing as typ
 from collections import Counter
 from enum import Enum
 
@@ -7,6 +8,7 @@ LITERALS_PATTERN = r"[a-z]"
 EXPONENT_PATTERN = r"[a-z]\^[1-9]*"
 ONE = ""
 MINUS_ONE = "-"
+POLYNOMIAL_TERM_SEPARATORS = r"[+-]"
 
 
 class MonomialExpressionWithoutLiteralsError(Exception):
@@ -82,9 +84,7 @@ class Monomial:
         """Adds 2 Monomies using the '+' operator"""
         if not self._alike_monomies(other):
             # Here we need to create a Polynomial
-            raise NotImplementedError(
-                "Sum of Non-Alike Monomies is not Implemented Yet"
-            )
+            return Polynomial([self, other])
         return Monomial(self.coefficient + other.coefficient, self.variables)
 
     def __sub__(self, other: "Monomial") -> "Monomial":
@@ -165,3 +165,44 @@ class Monomial:
         self.variables = {
             key: value for key, value in variables.items() if not value == 0
         }
+
+
+class Polynomial:
+    def __init__(self, monomial_list: typ.List[Monomial]):
+        self.monomial_list: typ.List[Monomial] = monomial_list
+
+    @classmethod
+    def from_string(cls, expression: str) -> "Polynomial":
+        monomial_string_list: list = re.split(
+            POLYNOMIAL_TERM_SEPARATORS,
+            expression
+        )
+        monomial_list: typ.List[Monomial] = [
+            Monomial.from_string(monomial_string) for monomial_string in monomial_string_list
+        ]
+        return cls(monomial_list)
+
+
+    def __repr__(self) -> str:
+        """
+        Textual representation of a Polynomial
+
+        Note for the further improvement:
+
+        For now if our Polynomial starts with a positive sign we remove it,
+        perhaps we can improve this in the future and directly return the
+        appropriate representation of the Polynomial without the need of
+        stripping the string depending on the first term's sign
+        """
+        output = "".join(
+            [
+                monomial.sign.value + str(monomial)
+                if monomial.sign == MonomialSign.POSITIVE
+                else str(monomial)
+                for monomial in self.monomial_list
+            ]
+        )
+        if output.startswith(MonomialSign.POSITIVE.value):
+            output = output[1:]
+
+        return output
