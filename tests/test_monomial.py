@@ -214,10 +214,58 @@ def test_monomial_division(monomial_1, monomial_2, result):
             Monomial.from_string("2a^3b^2"),
             Polynomial.from_string("2a^2b^3+2a^3b^2"),
         ),
-
     ],
 )
-def test_non_alike_monomial_sum_yields_a_polinomial(monomial_1, monomial_2, result):
+def test_non_alike_monomial_sum_yields_a_polynomial(monomial_1, monomial_2, result):
     assert isinstance(monomial_1 + monomial_2, Polynomial)
     assert monomial_1 + monomial_2 == result
 
+
+@pytest.mark.parametrize(
+    "monomial_1,monomial_2,result",
+    [
+        (
+            Monomial.from_string("2ab"),
+            Monomial.from_string("2cd"),
+            Polynomial.from_string("2ab-2cd"),
+        ),
+        (
+            Monomial.from_string("2ab"),
+            Monomial.from_string("-2cd"),
+            Polynomial.from_string("2ab+2cd"),
+        ),
+        (
+            Monomial.from_string("2ab"),
+            Monomial.from_string("4a^2b"),
+            Polynomial.from_string("2ab-4a^2b"),
+        ),
+        (
+            Monomial.from_string("2ab"),
+            Monomial.from_string("-4a^2b"),
+            Polynomial.from_string("2ab+4a^2b"),
+        ),
+        (
+            Monomial.from_string("2a^2b^3"),
+            Monomial.from_string("a^3b^2"),
+            Polynomial.from_string("2a^2b^3-a^3b^2"),
+        ),
+        (
+            Monomial.from_string("2a^2b^3"),
+            Monomial.from_string("-a^3b^2"),
+            Polynomial.from_string("2a^2b^3+a^3b^2"),
+        ),
+        (
+            Monomial.from_string("-2a^2b^3"),
+            Monomial.from_string("a^3b^2"),
+            Polynomial.from_string("-2a^2b^3-a^3b^2"),
+        ),
+        (
+            Monomial.from_string("-2a^2b^3"),
+            Monomial.from_string("-a^3b^2"),
+            Polynomial.from_string("-2a^2b^3+a^3b^2"),
+        ),
+    ],
+)
+def test_non_alike_monomial_sub_yields_a_polinomial(monomial_1, monomial_2, result):
+    assert isinstance(monomial_1 - monomial_2, Polynomial)
+    assert monomial_1 - monomial_2 == result

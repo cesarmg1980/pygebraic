@@ -2,13 +2,14 @@ import re
 import typing as typ
 from collections import Counter
 from enum import Enum
+from copy import deepcopy
 
-COEFFICIENT_PATTERN = r"-?[0-9]*"
+COEFFICIENT_PATTERN = r"[+-]?[0-9]*"
 LITERALS_PATTERN = r"[a-z]"
 EXPONENT_PATTERN = r"[a-z]\^[1-9]*"
-ONE = ""
-MINUS_ONE = "-"
-POLYNOMIAL_TERM_SEPARATORS = r"[+-]"
+ONES = ["", "+"]
+NEGATIVE_ONE = "-"
+POLYNOMIAL_PARSING_PATTERN = r"[+-]?[0-9]*[a-z\^0-9]+"
 
 
 class MonomialExpressionWithoutLiteralsError(Exception):
@@ -26,9 +27,7 @@ class Monomial:
         matching exponent"""
         self.coefficient = coefficient
         self.variables = variables
-        self.sign = (
-            MonomialSign.POSITIVE if self.coefficient > 0 else MonomialSign.NEGATIVE
-        )  # coefficient is either > 1 or < -1 never 0
+        self.sign = self._signum()
 
     @classmethod
     def from_string(cls, expression: str):
@@ -36,9 +35,18 @@ class Monomial:
         variables: dict = {}
 
         coefficient_expression = re.search(COEFFICIENT_PATTERN, expression)
-        if coefficient_expression.group() is ONE:
+        """
+        Depending on the role and position of the Monomial (it could be
+        presented just as a Monomial or within a Polynomial, and if it's
+        within a Polynomial it could the first term or any subsequent) the
+        coefficient 1 could be an empty string ("") or ("+", "-"), i.e:
+        "a^2b^3+a^3b^2", in this example the first term has a coefficient
+        of 1 and no sign in front of it, the second term has also a
+        coefficient of 1 but its sign it's "+" because of the position
+        """
+        if coefficient_expression.group() in ONES:
             coefficient = 1
-        elif coefficient_expression.group() is MINUS_ONE:
+        elif coefficient_expression.group() is NEGATIVE_ONE:
             coefficient = -1
         else:
             coefficient = int(coefficient_expression.group())
@@ -73,7 +81,7 @@ class Monomial:
         return variable_exponent_dict
 
     def __eq__(self, other: object) -> bool:
-        """Compares 2 Monomies"""
+        """Compares 2 Monomials"""
         if not isinstance(other, Monomial):
             raise Exception("Error: <other> is not of a 'Monomial' instance")
         return (
@@ -81,19 +89,21 @@ class Monomial:
         )
 
     def __add__(self, other: "Monomial") -> "Monomial":
-        """Adds 2 Monomies using the '+' operator"""
+        """Adds 2 Monomials using the '+' operator"""
         if not self._alike_monomies(other):
             # Here we need to create a Polynomial
             return Polynomial([self, other])
         return Monomial(self.coefficient + other.coefficient, self.variables)
 
     def __sub__(self, other: "Monomial") -> "Monomial":
-        """Adds 2 Monomies using the '+' operator"""
+        """Adds 2 Monomials using the '-' operator"""
         if not self._alike_monomies(other):
-            # Here we need to create a Polynomial
-            raise NotImplementedError(
-                "Sum of Non-Alike Monomies is not Implemented Yet"
-            )
+            """
+            Here we need to create a Polynomial if both Minuend and
+            Subtrahend are not alike terms
+            """
+            subtrahend = deepcopy(other)
+            return Polynomial([self, subtrahend.opposite()])
         return Monomial(self.coefficient - other.coefficient, self.variables)
 
     def __mul__(self, other: "Monomial") -> "Monomial":
@@ -113,17 +123,15 @@ class Monomial:
         raw_coefficient_division = (
             self.coefficient / other.coefficient
         )  # here we get a float
-        result = (
+        coefficient = (
             int(self.coefficient / other.coefficient)
             if raw_coefficient_division.is_integer()
             else self.coefficient / other.coefficient
         )  # here we remove the decimal part if the result is an int and we leave it if it's not
-        result = Monomial(
-            result,
-            self._sanitize_when_exponent_is_zero(
-                dict(Counter(self.variables) - Counter(other.variables))
-            ),
+        self._sanitize_when_exponent_is_zero(
+            dict(Counter(self.variables) - Counter(other.variables))
         )
+        result = Monomial(coefficient, self.variables)
         return result
 
     def __repr__(self) -> str:
@@ -149,9 +157,9 @@ class Monomial:
     def _coefficient_to_string(self) -> str:
         """Converts the Monomial Coefficient to readable string"""
         if self.coefficient == 1:
-            return ONE
+            return ""
         elif self.coefficient == -1:
-            return MINUS_ONE
+            return "-"
         else:
             return str(self.coefficient)
 
@@ -166,6 +174,20 @@ class Monomial:
             key: value for key, value in variables.items() if not value == 0
         }
 
+    def _signum(self) -> MonomialSign:
+        return (
+            MonomialSign.POSITIVE if self.coefficient > 0 else MonomialSign.NEGATIVE
+        )  # coefficient is either > 1 or < -1 never 0
+
+    def opposite(self) -> "Monomial":
+        """
+        Returns the Monomial opposite by making its coefficient opposite and
+        assigning the proper signum
+        """
+        self.coefficient = -self.coefficient
+        self.sign = self._signum()
+        return self
+
 
 class Polynomial:
     def __init__(self, monomial_list: typ.List[Monomial]):
@@ -173,15 +195,18 @@ class Polynomial:
 
     @classmethod
     def from_string(cls, expression: str) -> "Polynomial":
-        monomial_string_list: list = re.split(
-            POLYNOMIAL_TERM_SEPARATORS,
-            expression
-        )
+        monomial_string_list: list = re.findall(POLYNOMIAL_PARSING_PATTERN, expression)
         monomial_list: typ.List[Monomial] = [
-            Monomial.from_string(monomial_string) for monomial_string in monomial_string_list
+            Monomial.from_string(monomial_string)
+            for monomial_string in monomial_string_list
         ]
         return cls(monomial_list)
 
+    def __eq__(self, other) -> bool:
+        """
+        Returns true is 2 Polynomials are equals
+        """
+        return self.monomial_list == other.monomial_list
 
     def __repr__(self) -> str:
         """

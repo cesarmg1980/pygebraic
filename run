@@ -1,27 +1,45 @@
 #!/bin/bash
 
 tests(){
-    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run python -m pytest "$@"
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry \
+        poetry lock --no-update && \
+        poetry install && \
+        poetry run python -m pytest --cov "$@"
 }
 
 ipython(){
-    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run ipython
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry \
+        poetry lock --no-update && \
+        poetry install && \
+        poetry run ipython
 }
 
 isort() {
-    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run isort .
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry \
+        poetry lock --no-update && \
+        poetry install && \
+        poetry run isort .
 }
 
 black() {
-    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run black .
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry \
+        poetry lock --no-update && \
+        poetry install && \
+        poetry run black .
 }
 
 mypy() {
-    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run mypy .
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry \
+        poetry lock --no-update && \
+        poetry install && \
+        poetry run mypy .
 }
 
 dev() {
-    docker run --rm -it -v "$PWD:/app" py3.9-poetry poetry run bash
+    docker run --rm -it -v "$PWD:/app" py3.9-poetry \
+        poetry lock --no-update && \
+        poetry install && \
+        poetry shell
 }
 
 
