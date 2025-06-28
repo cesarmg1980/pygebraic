@@ -10,3 +10,5 @@
 *.swp
 .python-version
 .coverage
+.idea
+.DS_Store

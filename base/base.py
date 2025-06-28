@@ -190,8 +190,8 @@ class Monomial:
 
 
 class Polynomial:
-    def __init__(self, monomial_list: typ.List[Monomial]):
-        self.monomial_list: typ.List[Monomial] = monomial_list
+    def __init__(self, monomial_list: list[Monomial]):
+        self.monomial_list: list[Monomial] = monomial_list
 
     @classmethod
     def from_string(cls, expression: str) -> "Polynomial":
@@ -231,3 +231,39 @@ class Polynomial:
             output = output[1:]
 
         return output
+
+    def order_on(self, variable: str, descending: bool = True) -> "Polynomial":
+        """
+        Orders the Polynomial ascendingly or descendingly by the
+        specified variable, if the variable is not present in the Polynomial
+        it will raise an Exception
+        """
+        if not variable:
+            raise ValueError("Variable must be specified for ordering the Polynomial")
+
+        ordered_monomial_list = sorted(
+            self.monomial_list,
+            key=lambda monomial: monomial.variables.get(variable, 0),
+            reverse=descending,
+        )
+        return Polynomial(ordered_monomial_list)
+
+    def __add__(self, other):
+        raise NotImplementedError(
+            "Addition of Polynomials is not implemented yet."
+        )
+
+    def __sub__(self, other):
+        raise NotImplementedError(
+            "Subtraction of Polynomials is not implemented yet."
+        )
+
+    def __mul__(self, other):
+        raise NotImplementedError(
+            "Multiplication of Polynomials is not implemented yet."
+        )
+
+    def __truediv__(self, other):
+        raise NotImplementedError(
+            "Division of Polynomials is not implemented yet."
+        )
